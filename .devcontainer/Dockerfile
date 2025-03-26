@@ -1,5 +1,5 @@
 # FROM ubuntu
-FROM nvidia/cuda as base
+FROM nvcr.io/nvidia/pytorch:24.05-py3
 
 RUN apt-get update
 RUN apt-get install vim sudo curl -y
