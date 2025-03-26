@@ -1,5 +1,5 @@
 # FROM ubuntu
-FROM pytorch/pytorch:2.3.0-cuda12.1-cudnn8-runtime as base
+FROM nvidia/cuda as base
 
 RUN apt-get update
 RUN apt-get install vim sudo curl -y
