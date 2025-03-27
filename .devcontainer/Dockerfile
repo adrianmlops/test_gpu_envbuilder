@@ -1,5 +1,7 @@
-FROM ubuntu
-# FROM nvcr.io/nvidia/pytorch:24.05-py3
+# FROM ubuntu
+#FROM nvcr.io/nvidia/pytorch:24.05-py3
+#191940200295.dkr.ecr.us-east-2.amazonaws.com/coder:nvidia_pytorch_24_05_py3
+FROM 191940200295.dkr.ecr.us-east-2.amazonaws.com/coder:nvidia_pytorch_24_05_py3
 
 RUN apt-get update
 RUN apt-get install vim sudo curl -y
