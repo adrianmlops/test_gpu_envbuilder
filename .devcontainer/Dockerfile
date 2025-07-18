@@ -1,22 +1,53 @@
-# FROM ubuntu
-FROM nvcr.io/nvidia/pytorch:24.05-py3
-#191940200295.dkr.ecr.us-east-2.amazonaws.com/coder:nvidia_pytorch_24_05_py3
-# FROM public.ecr.aws/q6e0p8s4/test-coder:nvidia_pytorch_24_05_p3
-#FROM nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda10.2
+FROM ubuntu:noble
 
-USER root
+SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
+
+# Install the Docker apt repository
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get upgrade --yes --no-install-recommends --no-install-suggests && \
+    apt-get install --yes --no-install-recommends --no-install-suggests \
+    ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+COPY docker-archive-keyring.gpg /usr/share/keyrings/docker-archive-keyring.gpg
+COPY docker.list /etc/apt/sources.list.d/docker.list
+
+# Install baseline packages
+RUN apt-get update && \
+    apt-get install --yes --no-install-recommends --no-install-suggests \
     bash \
-    wget \
-    ca-certificates \
+    build-essential \
+    containerd.io \
     curl \
-    git \
+    docker-ce \
+    docker-ce-cli \
+    docker-buildx-plugin \
+    docker-compose-plugin \
+    htop \
     jq \
     locales \
+    man \
+    pipx \
+    python3 \
+    python3-pip \
+    software-properties-common \
     sudo \
+    systemd \
+    systemd-sysv \
+    unzip \
+    vim \
+    wget \
+    rsync && \
+# Install latest Git using their official PPA
+    add-apt-repository ppa:git-core/ppa && \
+    apt-get install --yes git \
     && rm -rf /var/lib/apt/lists/*
+
+# Enables Docker starting with systemd
+RUN systemctl enable docker
+
+# Create a symlink for standalone docker-compose usage
+RUN ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/bin/docker-compose
 
 # Generate the desired locale (en_US.UTF-8)
 RUN locale-gen en_US.UTF-8
@@ -31,11 +62,10 @@ RUN userdel -r ubuntu && \
     useradd coder \
     --create-home \
     --shell=/bin/bash \
+    --groups=docker \
     --uid=1000 \
     --user-group && \
     echo "coder ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers.d/nopasswd
 
 USER coder
-
-# Let's add a fancy prompt!
-RUN echo "PS1='🐳 \[\033[1;36m\]\h \[\033[1;34m\]\W\[\033[0;35m\] \[\033[1;36m\]# \[\033[0m\]'" > ~/.bashrc
+RUN pipx ensurepath # adds user's bin directory to PATH
