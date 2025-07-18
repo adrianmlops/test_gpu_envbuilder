@@ -59,8 +59,8 @@ ENV LANGUAGE=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
 # Remove the `ubuntu` user and add a user `coder` so that you're not developing as the `root` user
-RUN userdel -r ubuntu && \
-    useradd coder \
+#RUN userdel -r ubuntu && \
+RUN useradd coder \
     --create-home \
     --shell=/bin/bash \
     --groups=docker \
