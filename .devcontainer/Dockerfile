@@ -1,4 +1,5 @@
-FROM ubuntu:noble
+#FROM ubuntu:noble
+FROM nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04
 
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
